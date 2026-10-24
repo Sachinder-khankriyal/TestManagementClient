@@ -1,23 +1,92 @@
-<div class="row"> 
+<div class="row">
     <div class="col-10"></div>
     <div class="col-2">
-          <button class="btn btn-primary" (click)="openModal()">Launch Modal</button>
+        <button class="btn btn-primary" (click)="onAddClick()">Add</button>
     </div>
+</div>
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Requirement Name</th>
+                        <th>Requirement Code</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let requirement of requirements">
+                        <td>{{requirement.requirementName}}</td>
+                        <td>{{requirement.requirementCode}}</td>
+                        <td><a class="btn btn-danger" (click)="onDelete(requirement.requirementID)">Delete</a><a class="btn btn-primary" (click)="onEdit(requirement)">Edit</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
 </div>
 <div class="modal fade" tabindex="-1" #myModal aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Angular 19 Bootstrap Modal</h5>
-          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Requirement {{isEditMode==false?"Add":"Edit"}}</h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form  [formGroup]="requirementForm">
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Requirement Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="requirementName" [(ngModel)]="newReq.requirementName">
+                            <div class="text-danger">
+                                @if(requirementForm.controls['requirementName'].touched && requirementForm.controls['requirementName'].errors?.['required']){
+                                    <span>This is required</span>
+                                }@else if(requirementForm.controls['requirementName'].touched && requirementForm.controls['requirementName'].errors?.['maxLength']){
+                                    <span>Max char 200 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Requirement Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="requirementCode" [(ngModel)]="newReq.requirementCode">
+                            <div class="text-danger">
+                                @if(requirementForm.controls['requirementCode'].touched && requirementForm.controls['requirementCode'].errors?.['required']){
+                                    <span>This is required</span>
+                                }
+                                @else if(requirementForm.controls['requirementCode'].touched && requirementForm.controls['requirementCode'].errors?.['maxLength']){
+                                    <span>Max char 100 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Requirement Details</label>
+                        </div>
+                        <div class="col-8">
+                            <input formControlName="requirementDetails" [(ngModel)]="newReq.requirementDetails">
+                            <div class="text-danger">
+                                 @if(requirementForm.controls['requirementDetails'].touched && requirementForm.controls['requirementCode'].errors?.['maxLength']){
+                                    <span>Max char 4000 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" [disabled]="requirementForm.invalid" (click)="handleSaveOrUpdate()">{{isEditMode==false?"Save":"Update"}}</button>
+            </div>
         </div>
-        <div class="modal-body">
-          <p>Hello! This is a Bootstrap 5 modal controlled by Angular 19.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-          <button type="button" class="btn btn-primary" (click)="closeModal()">Save changes</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>

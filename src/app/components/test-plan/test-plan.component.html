@@ -1,0 +1,165 @@
+<div clas="row">
+    <div class="col-10"></div>
+    <div class="col-2">
+        <button class="btn btn-primary" (click)="onAddClick()">Add</button>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Test Plan Code</th>
+                        <th>Test Plan Title</th>
+                        <th>Environment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let testPlan of testPlans">
+                        <td>{{testPlan.testPlanCode}}</td>
+                        <td>{{testPlan.testPlanTitle}}</td>
+                        <td>{{testPlan.environment}}</td>
+                        <td><a class="btn btn-danger" (click)="onDelete(testPlan.testPlanID)">Delete</a><a class="btn btn-primary" (click)="onEdit(testPlan)">Edit</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" tabindex="-1" #myModal aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Test Plan {{isEditMode==false?"Add":"Edit"}}</h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="testPlanForm">
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Plan Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="testPlanCode" [(ngModel)]="newTP.testPlanCode">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['testPlanCode'].touched &&
+                                testPlanForm.controls['testPlanCode'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                                @else if(testPlanForm.controls['testPlanCode'].touched &&
+                                testPlanForm.controls['testPlanCode'].errors?.['maxLength']){
+                                <span>Max char 100 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Plan Title</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="testPlanTitle" [(ngModel)]="newTP.testPlanTitle">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['testPlanTitle'].touched &&
+                                testPlanForm.controls['testPlanTitle'].errors?.['required']){
+                                <span>This is required</span>
+                                }@else if(testPlanForm.controls['testPlanTitle'].touched &&
+                                testPlanForm.controls['testPlanTitle'].errors?.['maxLength']){
+                                <span>Max char 250 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Environment</label>
+                        </div>
+                        <div class="col-8">
+                            <input formControlName="environment" [(ngModel)]="newTP.environment">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['environment'].touched &&
+                                testPlanForm.controls['environment'].errors?.['maxLength']){
+                                <span>This is required</span>
+                                }@else if(testPlanForm.controls['environment'].touched &&
+                                testPlanForm.controls['environment'].errors?.['maxLength']){
+                                <span>Max char 100 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Steps</label>
+                        </div>
+                        <div class="col-8">
+                            <input formControlName="testSteps" [(ngModel)]="newTP.testSteps">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['testSteps'].touched &&
+                                testPlanForm.controls['testSteps'].errors?.['maxLength']){
+                                <span>Max char 8000 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Scope</label>
+                        </div>
+                        <div class="col-8">
+                            <input formControlName="scope" [(ngModel)]="newTP.scope">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['scope'].touched && testPlanForm.controls['scope'].errors?.['maxLength']){
+                                <span>Max char 4000 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Pre Conditions</label>
+                        </div>
+                        <div class="col-8">
+                            <input formControlName="preconditions" [(ngModel)]="newTP.preconditions">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['preconditions'].touched && testPlanForm.controls['preconditions'].errors?.['maxLength']){
+                                <span>Max char 4000 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="row">
+                        <div class="col-4">
+                            <label>Expected Result</label>
+                        </div>
+                        <div class="col-8">
+                            <input formControlName="expectedResult" [(ngModel)]="newTP.expectedResult">
+                            <div class="text-danger">
+                                @if(testPlanForm.controls['expectedResult'].touched && testPlanForm.controls['expectedResult'].errors?.['maxLength']){
+                                <span>Max char 4000 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" [disabled]="testPlanForm.invalid"
+                    (click)="handleSaveOrUpdate()">{{isEditMode==false?"Save":"Update"}}</button>
+            </div>
+        </div>
+    </div>
+</div>

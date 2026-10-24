@@ -1,0 +1,124 @@
+<div class="row">
+    <div class="col-8"></div>
+    <div class="col-4">
+        <button class="btn btn-primary" (click)="onAddClick()">Add</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                <tr >
+                    <th>Test Case Code</th>
+                    <th>Test Case Title</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let testCase of testCases">
+                        <td>{{testCase.testCaseCode}}</td>
+                        <td>{{testCase.testCaseTitle}}</td>
+                        <td><a class="btn btn-danger" (click)="onDelete(testCase.testCaseID)">Delete</a><a class="btn btn-primary" (click)="onEdit(testCase.testCaseID)">Edit</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" #myModal aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Test Plan {{isEditMode==false?"Add":"Edit"}}</h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="testCaseForm">
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Case Code</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="testCaseCode">
+                            <div class="text-danger">
+                                @if(testCaseForm.controls['testCaseCode'].touched &&
+                                testCaseForm.controls['testCaseCode'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                                @else if(testCaseForm.controls['testCaseCode'].touched &&
+                                testCaseForm.controls['testCaseCode'].errors?.['maxLength']){
+                                <span>Max char 100 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Case Title</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="testCaseTitle">
+                            <div class="text-danger">
+                                @if(testCaseForm.controls['testCaseTitle'].touched &&
+                                testCaseForm.controls['testCaseTitle'].errors?.['required']){
+                                <span>This is required</span>
+                                }@else if(testCaseForm.controls['testCaseTitle'].touched &&
+                                testCaseForm.controls['testCaseTitle'].errors?.['maxLength']){
+                                <span>Max char 250 required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Plan</label>
+                        </div>
+                        <div class="col-8">
+                            <select formControlName="testPlanIds" multiple>
+                                <option *ngFor="let testPlan of testPlansList"  [ngValue]="testPlan.testPlanID">{{testPlan.testPlanTitle}}</option>
+                            </select>
+                            <div class="text-danger">
+                                @if(testCaseForm.controls['testPlanIds'].touched &&
+                                testCaseForm.controls['testPlanIds'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="row">
+                        <div class="col-4">
+                            <label>Requirement</label>
+                        </div>
+                        <div class="col-8">
+                            <select formControlName="requirementIds" multiple>
+                                <option *ngFor="let requirement of requirementsList" [ngValue]="requirement.requirementID">{{requirement.requirementName}}</option>
+                            </select>
+                            <div class="text-danger">
+                                @if(testCaseForm.controls['requirementIds'].touched &&
+                                testCaseForm.controls['requirementIds'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" [disabled]="testCaseForm.invalid"
+                    (click)="handleSaveOrUpdate()">{{isEditMode==false?"Save":"Update"}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
