@@ -26,3 +26,8 @@ export interface TestCaseRequirement {
 export interface TestCaseGetByID extends TestCasePayload{
   testCaseID: number;
 }
+
+export interface TestCasesList{
+  testCaseID: number;
+  testCaseTitle: string;
+}

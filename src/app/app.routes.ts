@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { RequirementComponent } from './components/requirement/requirement.component';
 import { TestPlanComponent } from './components/test-plan/test-plan.component';
 import { TestCaseComponent } from './components/test-case/test-case.component';
+import { TestRunComponent } from './components/test-run/test-run.component';
 
 export const routes: Routes = [
     {
@@ -19,5 +20,9 @@ export const routes: Routes = [
     {
         path: "testCase",
         component: TestCaseComponent
+    },
+     {
+        path: "testRun",
+        component: TestRunComponent
     }
 ];

@@ -1,0 +1,182 @@
+<div class="row">
+    <div class="col-8"></div>
+    <div class="col-4">
+        <button class="btn btn-primary" (click)="onAddClick()">Add</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <table class="table table-bordered">
+                <thead>
+                <tr >
+                    <th>Test Plan</th>
+                    <th>Test Case</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let testRun of testRuns">
+                        <td>{{testRun.testPlanTitle}}</td>
+                        <td>{{getTestCaseTitles(testRun.testCases)}}</td>
+                        <td><a class="btn btn-danger" (click)="onDelete(testRun.testRunId)">Delete</a><a class="btn btn-primary" (click)="onEdit(testRun.testRunId)">Edit</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" #myModal aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Test Run {{isEditMode==false?"Add":"Edit"}}</h5>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="testRunForm">
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Test Plan</label>
+                        </div>
+                        <div class="col-8">
+                            <select formControlName="testPlanId" (change)="onTestPlanChange()">
+                                <option *ngFor="let testPlan of testPlansList"  [ngValue]="testPlan.testPlanID">{{testPlan.testPlanTitle}}</option>
+                            </select>
+                            <div class="text-danger">
+                                @if(testRunForm.controls['testPlanId'].touched &&
+                                testRunForm.controls['testPlanId'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="row">
+                        <div class="col-4">
+                            <label>Test Case</label>
+                        </div>
+                        <div class="col-8">
+                            <select formControlName="testCaseIds" multiple>
+                                <option *ngFor="let testCase of testCasesList" [ngValue]="testCase.testCaseID">{{testCase.testCaseTitle}}</option>
+                            </select>
+                            <div class="text-danger">
+                                @if(testRunForm.controls['testCaseIds'].touched &&
+                                testRunForm.controls['testCaseIds'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Start Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="date" formControlName="startDate">
+                            <div class="text-danger">
+                                @if(testRunForm.controls['startDate'].touched &&
+                                testRunForm.controls['startDate'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>End Date</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="date" formControlName="endDate">
+                            <div class="text-danger">
+                                @if(testRunForm.controls['endDate'].touched &&
+                                testRunForm.controls['endDate'].errors?.['required']){
+                                <span>This is required</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                      <div class="row">
+                        <div class="col-4">
+                            <label>Environment</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="environment">
+                            <div class="text-danger">
+                                @if(testRunForm.controls['environment'].touched &&
+                                testRunForm.controls['environment'].errors?.['required']){
+                                <span>This is required</span>
+                                }  @else if(testRunForm.controls['environment'].touched &&
+                                testRunForm.controls['environment'].errors?.['maxLength']){
+                                <span>Max char 100</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                       <div class="row">
+                        <div class="col-4">
+                            <label>Executor Name</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="executorName">
+                            <div class="text-danger">
+                                @if(testRunForm.controls['executorName'].touched &&
+                                testRunForm.controls['executorName'].errors?.['required']){
+                                <span>This is required</span>
+                                }  @else if(testRunForm.controls['executorName'].touched &&
+                                testRunForm.controls['executorName'].errors?.['maxLength']){
+                                <span>Max char 200</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                      <div class="row">
+                        <div class="col-4">
+                            <label>Additional Details</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" formControlName="additionalDetails">
+                            <div class="text-danger">
+                                @if(testRunForm.controls['additionalDetails'].touched &&
+                                testRunForm.controls['additionalDetails'].errors?.['maxLength']){
+                                <span>Max char 4000</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4">
+                            <label>Attachment</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="file" #fileInput multiple accept="application/pdf" (change)="onFilesSelected($event)"/>
+                            @if(isEditMode==true && attachmentList!=null){
+                                <i class="bi bi-file-earmark-minus" *ngFor="let attachment of attachmentList"
+                                 [title]="attachment.fileName" style="cursor:pointer;" (click)="downloadAttachment(attachment.attachmentId)"></i>
+                            }
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary" [disabled]="testRunForm.invalid"
+                    (click)="handleSaveOrUpdate()">{{isEditMode==false?"Save":"Update"}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
